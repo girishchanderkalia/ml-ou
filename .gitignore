@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Data / artifacts (keep repo light)
+/data/
+/Prediction_Batch_files/
+/Training_Batch_Files/
+*.csv
+*.pkl
+*.pickle
+*.joblib
+*.npz
+*.npy
+*.zip
+
+# Logs
+*.log
