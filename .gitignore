@@ -29,6 +29,7 @@ Thumbs.db
 *.npz
 *.npy
 *.zip
+*.pdf
 
 # Logs
 *.log
