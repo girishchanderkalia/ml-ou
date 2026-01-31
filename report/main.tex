@@ -1,0 +1,211 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{caption}
+\geometry{margin=1in}
+
+\definecolor{codegray}{gray}{0.9}
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\footnotesize,
+    frame=single,
+    breaklines=true
+}
+
+\title{IM1002 Machine Learning Assignment}
+\author{Girish Chander Kalia}
+\date{\today}
+
+\begin{document}
+
+% ---------------------------------------------------------
+% TITLE PAGE
+% ---------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.35\textwidth]{ou_logo.png}\par\vspace{1cm}
+    {\Huge \textbf{IM1002 Machine Learning Assignment}\par}
+    \vspace{1cm}
+    {\Large Wafer Defect Classification Using Machine Learning}\par
+    \vspace{1.5cm}
+    {\large \textbf{Girish Chander Kalia}}\par
+    \vspace{0.5cm}
+    {\large \today}\par
+    \vfill
+\end{titlepage}
+
+% ---------------------------------------------------------
+% TABLE OF CONTENTS
+% ---------------------------------------------------------
+\tableofcontents
+\newpage
+
+% ---------------------------------------------------------
+% ABSTRACT
+% ---------------------------------------------------------
+\begin{abstract}
+This report presents a machine learning pipeline for wafer defect detection using the WM-811K dataset. Two experimental runs were conducted: a smaller subset of 20,000 samples and a large-scale run of 800,000 samples. Three models were evaluated: Logistic Regression, Random Forest, and XGBoost. The results demonstrate the impact of dataset size, class imbalance, and model complexity on classification performance. Random Forest consistently provided the best balance between precision and recall, while XGBoost achieved the highest recall for defective wafers. The full pipeline follows the CRISP-DM methodology.
+\end{abstract}
+
+% ---------------------------------------------------------
+% INTRODUCTION
+% ---------------------------------------------------------
+\section{Introduction}
+Semiconductor wafer inspection is a critical step in manufacturing, where early detection of defects prevents yield loss and reduces downstream costs. The WM-811K wafer map dataset \cite{wm811k} provides real-world wafer map patterns with defect labels. This project applies machine learning techniques to classify wafers as normal or defective.
+
+The implementation and codebase for this project are available on GitHub \cite{mlourepo}.
+
+% ---------------------------------------------------------
+% DATASET
+% ---------------------------------------------------------
+\section{Dataset}
+The WM-811K dataset contains over 800,000 wafer maps with varying shapes and defect types. For this project, labels were converted into a binary classification task:
+
+\begin{itemize}
+    \item \textbf{0}: Normal wafer (label ``none'')
+    \item \textbf{1}: Defective wafer (any defect type)
+\end{itemize}
+
+Two dataset sizes were used:
+
+\begin{enumerate}
+    \item \textbf{Experiment 1:} 20,000 samples (fast prototyping)
+    \item \textbf{Experiment 2:} 800,000 samples (full-scale evaluation)
+\end{enumerate}
+
+All wafer maps were resized to 32$\times$32 to ensure consistent input dimensions.
+
+% ---------------------------------------------------------
+% METHODOLOGY
+% ---------------------------------------------------------
+\section{Methodology}
+The CRISP-DM framework guided the workflow:
+
+\begin{enumerate}
+    \item \textbf{Business Understanding}: Detect defective wafers reliably.
+    \item \textbf{Data Understanding}: Explore wafer shapes, imbalance, and pixel distributions.
+    \item \textbf{Data Preparation}: Resize maps, flatten images, scale features, and split data.
+    \item \textbf{Modeling}: Train Logistic Regression, Random Forest, and XGBoost.
+    \item \textbf{Evaluation}: Compare precision, recall, F1-score, and accuracy.
+    \item \textbf{Deployment}: Provide insights for potential fab integration.
+\end{enumerate}
+
+% ---------------------------------------------------------
+% EXPERIMENT 1
+% ---------------------------------------------------------
+\section{Experiment 1: 20,000 Sample Subset}
+This smaller dataset allowed rapid experimentation.
+
+\subsection{Results}
+\begin{itemize}
+    \item Logistic Regression: F1 (defective) $\approx$ 0.96
+    \item Random Forest: F1 (defective) $\approx$ 0.97
+    \item XGBoost: F1 (defective) $\approx$ 0.97
+\end{itemize}
+
+All models performed strongly due to the balanced subset and reduced complexity.
+
+% ---------------------------------------------------------
+% EXPERIMENT 2
+% ---------------------------------------------------------
+\section{Experiment 2: 800,000 Sample Full Run}
+The full dataset introduces stronger imbalance and more complex defect patterns.
+
+\subsection{Results}
+\subsubsection{Logistic Regression}
+\begin{verbatim}
+Precision (0): 0.53   Recall (0): 0.90   F1: 0.67
+Precision (1): 0.97   Recall (1): 0.84   F1: 0.90
+Accuracy: 0.85
+\end{verbatim}
+
+\subsubsection{Random Forest}
+\begin{verbatim}
+Precision (0): 0.85   Recall (0): 0.81   F1: 0.83
+Precision (1): 0.96   Recall (1): 0.97   F1: 0.97
+Accuracy: 0.94
+\end{verbatim}
+
+\subsubsection{XGBoost}
+\begin{verbatim}
+Precision (0): 0.92   Recall (0): 0.47   F1: 0.63
+Precision (1): 0.90   Recall (1): 0.99   F1: 0.94
+Accuracy: 0.90
+\end{verbatim}
+
+\subsection{Confusion Matrix}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{confusion_matrix_rf.png}
+    \caption{Confusion Matrix — Random Forest}
+\end{figure}
+
+\subsection{ROC Curve Comparison}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{roc_curves.png}
+    \caption{ROC Curves for Logistic Regression, Random Forest, and XGBoost}
+\end{figure}
+
+\subsection{Discussion}
+\begin{itemize}
+    \item Logistic Regression struggled with nonlinear patterns and imbalance.
+    \item Random Forest achieved the best overall performance and class balance.
+    \item XGBoost prioritized recall for defective wafers, making it suitable when missing defects is unacceptable.
+\end{itemize}
+
+% ---------------------------------------------------------
+% COMPARISON TABLE
+% ---------------------------------------------------------
+\section{Comparison of Dataset Sizes}
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{20k F1 (Defective)} & \textbf{800k F1 (Defective)} & \textbf{Notes} \\
+\midrule
+Logistic Regression & 0.96 & 0.90 & Struggles at scale \\
+Random Forest & 0.97 & 0.97 & Most stable model \\
+XGBoost & 0.97 & 0.94 & High recall, low normal recall \\
+\bottomrule
+\end{tabular}
+\caption{Performance comparison across dataset sizes}
+\label{tab:comparison}
+\end{table}
+
+% ---------------------------------------------------------
+% CONCLUSION
+% ---------------------------------------------------------
+\section{Conclusion}
+Random Forest provides the best balance of precision and recall across both dataset sizes. XGBoost is ideal when maximizing recall for defective wafers is the priority. Logistic Regression serves as a useful baseline but is unsuitable for large-scale wafer classification.
+
+This project demonstrates the importance of dataset size, class imbalance handling, and model selection in semiconductor defect detection.
+
+% ---------------------------------------------------------
+% APPENDIX
+% ---------------------------------------------------------
+\section*{Appendix: Key Code Snippets}
+\subsection*{Resizing Wafer Maps}
+\begin{lstlisting}[language=Python]
+import cv2
+def resize_fast(w, size=32):
+    w = np.array(w).astype("float32")
+    return cv2.resize(w, (size, size), interpolation=cv2.INTER_AREA)
+\end{lstlisting}
+
+\subsection*{Train/Test Split and Scaling}
+\begin{lstlisting}[language=Python]
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_flat, labels, test_size=0.2, stratify=labels
+)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X

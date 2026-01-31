@@ -23,13 +23,11 @@ Thumbs.db
 /Prediction_Batch_files/
 /Training_Batch_Files/
 *.csv
-*.pkl
 *.pickle
 *.joblib
 *.npz
 *.npy
 *.zip
-*.pdf
 
 # Logs
 *.log
