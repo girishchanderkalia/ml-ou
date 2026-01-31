@@ -19,9 +19,6 @@ Thumbs.db
 .vscode/
 
 # Data / artifacts (keep repo light)
-/data/
-/Prediction_Batch_files/
-/Training_Batch_Files/
 *.csv
 *.pickle
 *.joblib
