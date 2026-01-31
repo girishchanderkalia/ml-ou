@@ -19,6 +19,7 @@ Thumbs.db
 .vscode/
 
 # Data / artifacts (keep repo light)
+*.pkl
 *.csv
 *.pickle
 *.joblib
